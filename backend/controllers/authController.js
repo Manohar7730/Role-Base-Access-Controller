@@ -1,3 +1,4 @@
+import Role from "../models/Role.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
@@ -7,11 +8,20 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+    const userRole = await Role.findOne({ name: "USER" });
+
+    if (!userRole) {
+      return res.status(500).json({
+        message: "USER role not found. Create role first.",
+      });
+    }
+
     const user = await User.create({
       name,
       email,
       password,
       status: "PENDING",
+      role: userRole._id,
     });
     return res.status(201).json({
       message: "User created",

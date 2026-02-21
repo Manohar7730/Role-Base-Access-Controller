@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["PENDING", "ACTIVE"],
     default: "PENDING",
+  },
+  role: {
+    type: Schema.Types.ObjectId,
+    ref: "Role",
   },
 });
 
