@@ -4,10 +4,19 @@ import {
   getRoles,
   updateRole,
 } from "../controllers/roleController.js";
+import authorize from "../middlewares/authorize.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
-router.get("/roles", getRoles);
-router.post("/roles", createRole);
-router.patch("/roles/:id", updateRole);
+router.get("/roles", authMiddleware, authorize("role.read"), getRoles);
+
+router.post("/roles", authMiddleware, authorize("role.create"), createRole);
+
+router.patch(
+  "/roles/:id",
+  authMiddleware,
+  authorize("role.update"),
+  updateRole,
+);
 
 export default router;
