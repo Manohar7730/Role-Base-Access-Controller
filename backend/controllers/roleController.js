@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Role from "../models/Role.js";
 
 export const getRoles = async (req, res) => {
@@ -16,6 +17,9 @@ export const createRole = async (req, res) => {
     if (checkExist) {
       return res.status(400).json({ message: "Role already exist" });
     }
+    if (!Array.isArray(permissions)) {
+      return res.status(400).json({ message: "permissions must be array" });
+    }
     const role = await Role.create({
       name,
       permissions,
@@ -30,6 +34,9 @@ export const updateRole = async (req, res) => {
   try {
     const { permissions } = req.body;
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
     const updatedRole = await Role.findByIdAndUpdate(
       { _id: id },
       { permissions },
@@ -38,7 +45,10 @@ export const updateRole = async (req, res) => {
     if (!updatedRole) {
       return res.status(404).json({ message: "Role not found" });
     }
-    return res.status(201).json({ message: "permissions updated" });
+    return res.status(200).json({
+      message: "permissions updated",
+      data: updatedRole,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
