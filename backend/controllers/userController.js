@@ -22,7 +22,11 @@ export const updateUserStatus = async (req, res) => {
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
-    const user = await User.findByIdAndUpdate(id, { status }, { new: true });
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status },
+      { returnDocument: "after" },
+    ).populate("role");
     return res.status(202).json({ message: "User status updated", data: user });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -43,7 +47,7 @@ export const assignRoleToUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       id,
       { role: roleDoc._id },
-      { new: true },
+      { returnDocument: "after" },
     ).populate("role");
     return res.status(202).json({ message: "User role updated", data: user });
   } catch (error) {
