@@ -35,7 +35,12 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).populate({
+      path: "role",
+      populate: {
+        path: "permissions",
+      },
+    });
     if (!existingUser) {
       return res.status(400).json({ message: "User does not exists" });
     }
@@ -52,7 +57,7 @@ export const login = async (req, res) => {
     }
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
-    });
+    });    
     return res.status(200).json({
       message: "Logged in Successfully",
       token,

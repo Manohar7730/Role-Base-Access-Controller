@@ -25,14 +25,17 @@ export const registerUser = createAsyncThunk(
     }
   },
 );
+const storedUser = JSON.parse(localStorage.getItem("user"));
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: localStorage.getItem("token"),
-    user: JSON.parse(localStorage.getItem("user")),
+    user: storedUser,
     isAuthenticated: !!localStorage.getItem("token"),
     loading: false,
     error: null,
+    permissions: storedUser?.role?.permissions?.map((p) => p.key) || [],
   },
   reducers: {
     logout: (state) => {
@@ -42,6 +45,11 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+    },
+    setPermissions: (state, action) => {
+      state.permissions = action.payload.data.role.permissions.map(
+        (p) => p.key,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -57,6 +65,10 @@ const authSlice = createSlice({
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("user", JSON.stringify(action.payload.data));
         state.isAuthenticated = true;
+        state.permissions = action.payload.data.role.permissions.map(
+          (p) => p.key,
+        );
+        console.log("LOGIN PAYLOAD:", action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -66,6 +78,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setPermissions } = authSlice.actions;
 
 export default authSlice.reducer;
