@@ -5,9 +5,11 @@ import authRouter from "./routes/authRoutes.js";
 import roleRouter from "./routes/roleRoutes.js";
 import permissionRouter from "./routes/permissionRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
