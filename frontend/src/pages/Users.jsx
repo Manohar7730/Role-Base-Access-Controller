@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../features/users/usersSlice";
+import { fetchUsers, makeUpdateUserRole } from "../features/users/usersSlice";
 import { makeUpdateUserStatus } from "../features/users/usersSlice";
+import { fetchRoles } from "../features/roles/rolesSlice";
 
 export default function Users() {
   const dispatch = useDispatch();
   const { list, loading } = useSelector((state) => state.users);
+  const { roleList, roleLoading } = useSelector((state) => state.roles);
   const toggleStatus = (user) => {
     const newStatus = user.status === "ACTIVE" ? "PENDING" : "ACTIVE";
 
@@ -16,8 +18,12 @@ export default function Users() {
       }),
     );
   };
+  const handleRoleChange = (userId, roleId) => {
+    dispatch(makeUpdateUserRole({ id: userId, role: roleId }));
+  };
   useEffect(() => {
     dispatch(fetchUsers());
+    dispatch(fetchRoles());
   }, [dispatch]);
   if (loading) return <p>Loading...</p>;
 
@@ -40,7 +46,19 @@ export default function Users() {
               <td>{u.name}</td>
               <td>{u.email}</td>
               <td>{u.status}</td>
-              <td>{u.role?.name || "N/A"}</td>
+              <td>
+                <select
+                  value={u.role?.name || ""}
+                  disabled={roleLoading}
+                  onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                >
+                  {roleList.map((r) => (
+                    <option key={r._id} value={r.name}>
+                      {r.name}
+                    </option>
+                  ))}
+                </select>
+              </td>
               <td>
                 <button>Edit</button>
                 <button>Delete</button>

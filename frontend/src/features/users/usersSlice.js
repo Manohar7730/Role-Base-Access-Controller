@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUsers, updateUserStatus } from "../../services/userService";
+import { getUsers, updateUserStatus,updateUserRole } from "../../services/userService";
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (_, { rejectWithValue }) => {
@@ -22,6 +22,19 @@ export const makeUpdateUserStatus = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Users Fetch failed",
+      );
+    }
+  },
+);
+export const makeUpdateUserRole = createAsyncThunk(
+  "users/updateUserRole",
+  async ({ id, role }, { rejectWithValue }) => {
+    try {
+      const data = await updateUserRole(id, role);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Role update failed",
       );
     }
   },
@@ -59,6 +72,21 @@ const usersSlice = createSlice({
         );
       })
       .addCase(makeUpdateUserStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(makeUpdateUserRole.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(makeUpdateUserRole.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedUser = action.payload.data;
+
+        state.list = state.list.map((user) =>
+          user._id === updatedUser._id ? updatedUser : user,
+        );
+      })
+      .addCase(makeUpdateUserRole.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
