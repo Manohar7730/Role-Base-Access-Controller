@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { login } from "../../services/authService";
+import { login, register } from "../../services/authService";
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
@@ -8,6 +8,20 @@ export const loginUser = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  },
+);
+
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const data = await register(credentials);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Register failed",
+      );
     }
   },
 );
