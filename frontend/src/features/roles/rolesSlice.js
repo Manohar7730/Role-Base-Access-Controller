@@ -29,10 +29,6 @@ const rolesSlice = createSlice({
         state.roleLoading = false;
         state.roleList = action.payload.data;
       })
-      .addCase(fetchRoles.rejected, (state, action) => {
-        state.roleLoading = false;
-        state.error = action.payload;
-      })
   },
 });
 

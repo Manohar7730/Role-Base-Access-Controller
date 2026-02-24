@@ -8,6 +8,7 @@ import Layout from "../components/Layout";
 import Home from "../pages/Home";
 import PublicRoute from "./PublicRoute";
 import Users from "../pages/Users";
+import Permissions from "../pages/Permissions";
 
 export default function AppRouter() {
   return (
@@ -22,6 +23,7 @@ export default function AppRouter() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/permissions" element={<Permissions/>} />
           </Route>
         </Route>
       </Routes>
