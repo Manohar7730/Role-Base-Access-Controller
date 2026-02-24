@@ -9,6 +9,7 @@ import Home from "../pages/Home";
 import PublicRoute from "./PublicRoute";
 import Users from "../pages/Users";
 import Permissions from "../pages/Permissions";
+import Roles from "../pages/Roles";
 
 export default function AppRouter() {
   return (
@@ -24,6 +25,7 @@ export default function AppRouter() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
             <Route path="/permissions" element={<Permissions/>} />
+            <Route path="/roles" element={<Roles/>}/>
           </Route>
         </Route>
       </Routes>

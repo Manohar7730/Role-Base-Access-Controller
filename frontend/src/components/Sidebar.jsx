@@ -17,7 +17,7 @@ export default function Sidebar() {
       <PermissionGuard permission="user.read">
         <Link to="/users">Users</Link>
       </PermissionGuard>
-      <PermissionGuard>
+      <PermissionGuard permission="role.read">
         <Link to="/roles">Roles</Link>
       </PermissionGuard>
       <PermissionGuard permission="permission.read">
