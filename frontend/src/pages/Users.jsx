@@ -7,6 +7,7 @@ import {
 } from "../features/users/usersSlice";
 import { fetchRoles } from "../features/roles/rolesSlice";
 import api from "../services/api";
+import "../styles/table.css";
 
 export default function Users() {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export default function Users() {
       makeUpdateUserStatus({
         id: user._id,
         status: newStatus,
-      })
+      }),
     );
   };
 
@@ -58,78 +59,76 @@ export default function Users() {
 
   return (
     <div>
-      <h2>Users</h2>
+      <h2 className="text-xl font-semibold mb-4">Users</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Role</th>
-            <th>Activate / Deactivate</th>
-            <th>Reset Password</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {list.map((u) => (
-            <tr key={u._id}>
-              <td>{u.name}</td>
-              <td>{u.email}</td>
-              <td>{u.status}</td>
-
-              <td>
-                <select
-                  value={u.role?.name || ""}
-                  disabled={roleLoading}
-                  onChange={(e) =>
-                    handleRoleChange(u._id, e.target.value)
-                  }
-                >
-                  {roleList.map((r) => (
-                    <option key={r._id} value={r.name}>
-                      {r.name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-
-              <td>
-                <button onClick={() => toggleStatus(u)}>
-                  {u.status === "ACTIVE"
-                    ? "Deactivate"
-                    : "Activate"}
-                </button>
-              </td>
-
-              <td>
-                {showReset === u._id ? (
-                  <>
-                    <input
-                      placeholder="Temp Password"
-                      value={tempPassword}
-                      onChange={(e) =>
-                        setTempPassword(e.target.value)
-                      }
-                    />
-                    <button onClick={() => handleReset(u._id)}>
-                      Save
-                    </button>
-                    <button onClick={() => setShowReset(null)}>
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <button onClick={() => setShowReset(u._id)}>
-                    Reset
-                  </button>
-                )}
-              </td>
+      <div className="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Role</th>
+              <th>Activate / Deactivate</th>
+              <th>Reset Password</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {list.map((u) => (
+              <tr key={u._id}>
+                <td>{u.name}</td>
+                <td>{u.email}</td>
+                <td>{u.status}</td>
+
+                <td>
+                  <select
+                    value={u.role?.name || ""}
+                    disabled={roleLoading}
+                    onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                  >
+                    {roleList.map((r) => (
+                      <option key={r._id} value={r.name}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+
+                <td>
+                  <button
+                    className={u.status === "ACTIVE" ? "danger" : ""}
+                    onClick={() => toggleStatus(u)}
+                  >
+                    {u.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                  </button>
+                </td>
+
+                <td>
+                  {showReset === u._id ? (
+                    <>
+                      <input
+                        placeholder="Temp Password"
+                        value={tempPassword}
+                        onChange={(e) => setTempPassword(e.target.value)}
+                      />
+                      <button onClick={() => handleReset(u._id)}>Save</button>
+                      <button
+                        className="danger"
+                        onClick={() => setShowReset(null)}
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button onClick={() => setShowReset(u._id)}>Reset</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
