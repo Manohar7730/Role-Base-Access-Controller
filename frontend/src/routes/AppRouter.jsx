@@ -12,6 +12,7 @@ import Permissions from "../pages/Permissions";
 import Roles from "../pages/Roles";
 import EditRole from "../pages/EditRole";
 import CreateRole from "../pages/createRole";
+import ChangePassword from "../pages/ChangePassword";
 
 export default function AppRouter() {
   return (
@@ -26,10 +27,11 @@ export default function AppRouter() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
-            <Route path="/permissions" element={<Permissions/>} />
-            <Route path="/roles" element={<Roles/>}/>
+            <Route path="/permissions" element={<Permissions />} />
+            <Route path="/roles" element={<Roles />} />
             <Route path="/roles/:id" element={<EditRole />} />
             <Route path="/roles/create" element={<CreateRole />} />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Route>
       </Routes>

@@ -16,3 +16,11 @@ export const updateUserRole = async (id, role) => {
   const response = await api.patch(`/api/users/${id}/role`, { role });
   return response.data;
 };
+
+export const changePassword = async (payload) => {
+  const response = await api.post(
+    "/api/users/change-password",
+    payload
+  );  
+  return response.data;
+};  

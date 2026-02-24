@@ -14,7 +14,9 @@ const authorize = (permission) => async (req, res, next) => {
     if (!user || !user.role) {
       return res.status(403).json({ message: "No role assigned" });
     }
-
+    if (user.role.name === "SUPER_ADMIN") {
+      return next();
+    }
     const permissionKeys = user.role.permissions.map((p) => p.key);
 
     if (!permissionKeys.includes(permission)) {

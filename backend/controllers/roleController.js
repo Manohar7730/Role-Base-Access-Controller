@@ -3,7 +3,9 @@ import Role from "../models/Role.js";
 
 export const getRoles = async (req, res) => {
   try {
-    const roles = await Role.find({}).populate("permissions");
+    const roles = await Role.find({
+      name: { $ne: "SUPER_ADMIN" },
+    }).populate("permissions");
     return res.status(200).json({ message: "Roles fetched", data: roles });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });

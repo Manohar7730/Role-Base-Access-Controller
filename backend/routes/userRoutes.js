@@ -1,6 +1,8 @@
 import express from "express";
 import {
+  adminResetPassword,
   assignRoleToUser,
+  changePassword,
   getUsers,
   updateUserStatus,
 } from "../controllers/userController.js";
@@ -23,6 +25,19 @@ router.patch(
   authMiddleware,
   authorize("user.update"),
   assignRoleToUser,
+);
+
+router.post(
+  "/users/change-password",
+  authMiddleware,
+  changePassword
+);
+
+router.patch(
+  "/users/:id/reset-password",
+  authMiddleware,
+  authorize("user.update"),
+  adminResetPassword
 );
 
 export default router;
