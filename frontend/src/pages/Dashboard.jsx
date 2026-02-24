@@ -4,15 +4,8 @@ import Users from "./Users";
 
 export default function Dashboard() {
   return (
-    <>
-      <PermissionGuard permission="user.read">
-        <Users/>
-      </PermissionGuard>
-
-      <PermissionGuard permission="permission.create">
-        <h2>Permission Create Visible</h2>
-      </PermissionGuard>
-   
-    </>
+    <div>
+      <h1>Dashboard</h1>
+    </div>
   );
 }

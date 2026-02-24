@@ -8,7 +8,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -16,6 +16,9 @@ export default function Sidebar() {
       <Link to="/dashboard">Dashboard</Link>
       <PermissionGuard permission="user.read">
         <Link to="/users">Users</Link>
+      </PermissionGuard>
+      <PermissionGuard>
+        <Link to ="/roles">Roles</Link>
       </PermissionGuard>
       <button onClick={handleLogout}>Logout</button>
     </div>

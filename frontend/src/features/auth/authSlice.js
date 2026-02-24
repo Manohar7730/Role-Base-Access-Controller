@@ -25,14 +25,24 @@ export const registerUser = createAsyncThunk(
     }
   },
 );
-const storedUser = JSON.parse(localStorage.getItem("user"));
+const getStoredUser = () => {
+  try {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  } catch {
+    return null;
+  }
+};
+
+const storedUser = getStoredUser();
+const storedToken = localStorage.getItem("token");
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    token: localStorage.getItem("token"),
+    token: storedToken,
     user: storedUser,
-    isAuthenticated: !!localStorage.getItem("token"),
+    isAuthenticated: !!(storedToken && storedUser),
     loading: false,
     error: null,
     permissions: storedUser?.role?.permissions?.map((p) => p.key) || [],
@@ -43,6 +53,7 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      state.permissions = [];
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },

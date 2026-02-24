@@ -36,7 +36,6 @@ export default function Users() {
             <th>Email</th>
             <th>Status</th>
             <th>Role</th>
-            <th>Actions</th>
             <th>Activate/Deactivate</th>
           </tr>
         </thead>
@@ -58,10 +57,6 @@ export default function Users() {
                     </option>
                   ))}
                 </select>
-              </td>
-              <td>
-                <button>Edit</button>
-                <button>Delete</button>
               </td>
               <td>
                 <button onClick={() => toggleStatus(u)} disabled={loading}>
