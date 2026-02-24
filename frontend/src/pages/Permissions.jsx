@@ -14,16 +14,33 @@ export default function Permissions() {
 
   if (loading) return <p>Loading...</p>;
 
+  /* Internal CSS */
+  const styles = {
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      color: "#111827",
+    },
+  };
+
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Permissions</h2>
 
-      <Link className="link-btn mb-2 inline-block" to="/permissions/create">
+      {/* Page Title */}
+      <h2 style={styles.title}>Permissions</h2>
+
+      {/* Add Permission */}
+      <Link
+        className="link-btn mb-3 inline-block"
+        to="/permissions/create"
+      >
         + Add Permission
       </Link>
 
       <div className="table-container">
         <table>
+
           <thead>
             <tr>
               <th>Key</th>
@@ -39,8 +56,10 @@ export default function Permissions() {
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
+
     </div>
   );
 }

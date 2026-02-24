@@ -8,10 +8,21 @@ import {
 import { fetchRoles } from "../features/roles/rolesSlice";
 import api from "../services/api";
 import "../styles/table.css";
+import Button from "../components/ui/Button";
 
 export default function Users() {
-  const dispatch = useDispatch();
 
+  /* Internal CSS */
+  const styles = {
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      color: "#111827",
+    },
+  };
+
+  const dispatch = useDispatch();
   const { list, loading } = useSelector((state) => state.users);
   const { roleList, roleLoading } = useSelector((state) => state.roles);
 
@@ -30,7 +41,7 @@ export default function Users() {
       makeUpdateUserStatus({
         id: user._id,
         status: newStatus,
-      }),
+      })
     );
   };
 
@@ -59,10 +70,13 @@ export default function Users() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Users</h2>
+
+      {/* Page Title */}
+      <h2 style={styles.title}>Users</h2>
 
       <div className="table-container">
         <table>
+
           <thead>
             <tr>
               <th>Name</th>
@@ -77,15 +91,27 @@ export default function Users() {
           <tbody>
             {list.map((u) => (
               <tr key={u._id}>
+
                 <td>{u.name}</td>
                 <td>{u.email}</td>
-                <td>{u.status}</td>
+
+                {/* Inline Conditional Styling */}
+                <td
+                  style={{
+                    color: u.status === "ACTIVE" ? "#16a34a" : "#dc2626",
+                    fontWeight: "500",
+                  }}
+                >
+                  {u.status}
+                </td>
 
                 <td>
                   <select
                     value={u.role?.name || ""}
                     disabled={roleLoading}
-                    onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                    onChange={(e) =>
+                      handleRoleChange(u._id, e.target.value)
+                    }
                   >
                     {roleList.map((r) => (
                       <option key={r._id} value={r.name}>
@@ -96,39 +122,47 @@ export default function Users() {
                 </td>
 
                 <td>
-                  <button
-                    className={u.status === "ACTIVE" ? "danger" : ""}
-                    onClick={() => toggleStatus(u)}
-                  >
+                  <Button onClick={() => toggleStatus(u)}>
                     {u.status === "ACTIVE" ? "Deactivate" : "Activate"}
-                  </button>
+                  </Button>
                 </td>
 
                 <td>
                   {showReset === u._id ? (
                     <>
                       <input
+                        className="border border-gray-300 rounded-md px-3 py-2 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder="Temp Password"
                         value={tempPassword}
-                        onChange={(e) => setTempPassword(e.target.value)}
+                        onChange={(e) =>
+                          setTempPassword(e.target.value)
+                        }
                       />
-                      <button onClick={() => handleReset(u._id)}>Save</button>
-                      <button
-                        className="danger"
-                        onClick={() => setShowReset(null)}
-                      >
-                        Cancel
-                      </button>
+
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        <Button onClick={() => handleReset(u._id)}>
+                          Save
+                        </Button>
+
+                        <Button onClick={() => setShowReset(null)}>
+                          Cancel
+                        </Button>
+                      </div>
                     </>
                   ) : (
-                    <button onClick={() => setShowReset(u._id)}>Reset</button>
+                    <Button onClick={() => setShowReset(u._id)}>
+                      Reset
+                    </Button>
                   )}
                 </td>
+
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
+
     </div>
   );
 }

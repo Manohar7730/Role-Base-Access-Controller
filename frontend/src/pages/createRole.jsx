@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchPermissions } from "../features/permissions/permissionsSlice";
 import { createRoleThunk } from "../features/roles/rolesSlice";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 
 export default function CreateRole() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { list: permissions } = useSelector(
-    (s) => s.permissions
-  );
+  const { list: permissions } = useSelector((s) => s.permissions);
 
   const [name, setName] = useState("");
   const [selected, setSelected] = useState([]);
@@ -42,31 +41,62 @@ export default function CreateRole() {
     }
   };
 
+  /* Internal CSS */
+  const styles = {
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      color: "#111827",
+    },
+    card: {
+      maxWidth: "500px",
+      background: "#ffffff",
+      padding: "24px",
+      borderRadius: "8px",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+    },
+    checkboxRow: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      marginBottom: "8px",
+    },
+  };
+
   return (
-    <div>
-      <h2>Create Role</h2>
+    <div style={styles.card}>
+
+      <h2 style={styles.title}>Create Role</h2>
 
       <form onSubmit={handleSubmit}>
+
         <input
+          className="border border-gray-300 rounded-md px-3 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Role name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
-        <h4>Permissions</h4>
+        <h4 style={{ marginBottom: "8px", fontWeight: "600" }}>
+          Permissions
+        </h4>
 
         {permissions.map((p) => (
-          <label key={p._id} style={{ display: "block" }}>
+          <div key={p._id} style={styles.checkboxRow}>
             <input
               type="checkbox"
               checked={selected.includes(p._id)}
               onChange={() => togglePermission(p._id)}
             />
-            {p.key}
-          </label>
+            <label>{p.key}</label>
+          </div>
         ))}
 
-        <button type="submit">Create</button>
+        <div style={{ marginTop: "12px" }}>
+          <Button type="submit">Create</Button>
+        </div>
+
       </form>
     </div>
   );

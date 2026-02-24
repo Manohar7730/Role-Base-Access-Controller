@@ -14,16 +14,30 @@ export default function Roles() {
 
   if (roleLoading) return <p>Loading...</p>;
 
+  /* Internal CSS */
+  const styles = {
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      color: "#111827",
+    },
+  };
+
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Roles</h2>
 
-      <Link className="link-btn mb-2 inline-block" to="/roles/create">
+      {/* Page Title */}
+      <h2 style={styles.title}>Roles</h2>
+
+      {/* Add Role Link */}
+      <Link className="link-btn mb-3 inline-block" to="/roles/create">
         + Add Role
       </Link>
 
       <div className="table-container">
         <table>
+
           <thead>
             <tr>
               <th>Name</th>
@@ -36,25 +50,35 @@ export default function Roles() {
           <tbody>
             {roleList.map((r) => (
               <tr key={r._id}>
+
                 <td>{r.name}</td>
+
                 <td>{r.permissions.length}</td>
+
                 <td>
-                  <ul>
+                  <ul style={{ paddingLeft: "16px" }}>
                     {r.permissions.map((p) => (
                       <li key={p._id}>{p.description}</li>
                     ))}
                   </ul>
                 </td>
+
                 <td>
-                  <Link className="link-btn" to={`/roles/${r._id}`}>
+                  <Link
+                    className="link-btn"
+                    to={`/roles/${r._id}`}
+                  >
                     Edit
                   </Link>
                 </td>
+
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
+
     </div>
   );
 }

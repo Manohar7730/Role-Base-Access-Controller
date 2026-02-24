@@ -12,11 +12,23 @@ export default function Dashboard() {
     return <p className="text-gray-500">Loading...</p>;
   }
 
+  /* Internal CSS */
+  const styles = {
+    title: {
+      fontSize: "22px",
+      fontWeight: "600",
+      marginBottom: "16px",
+      color: "#111827",
+    },
+  };
+
   return (
     <div className="space-y-6">
 
-      <h2 className="text-2xl font-semibold">RBAC Overview</h2>
+      {/* Page Title */}
+      <h2 style={styles.title}>RBAC Overview</h2>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <div className="bg-white p-6 rounded-lg shadow">
@@ -41,20 +53,24 @@ export default function Dashboard() {
 
       </div>
 
+      {/* Recent Users */}
       <div className="bg-white p-6 rounded-lg shadow">
 
-        <h3 className="text-lg font-semibold mb-4">Recent Users</h3>
+        <h3 className="text-lg font-semibold mb-4">
+          Recent Users
+        </h3>
 
         <ul className="divide-y">
           {data.recentUsers.map((u) => (
-            <li key={u._id} className="py-2 flex justify-between">
-
+            <li
+              key={u._id}
+              className="py-2 flex justify-between items-center"
+            >
               <span>{u.name}</span>
 
               <span className="text-sm text-gray-600">
                 {u.role?.name} • {u.status}
               </span>
-
             </li>
           ))}
         </ul>
