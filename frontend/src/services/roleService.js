@@ -12,3 +12,8 @@ export const updateRole = async (id, permissions) => {
   });
   return res.data;
 };
+
+export const createRole = async (payload) => {
+  const res = await api.post("/api/roles", payload);
+  return res.data;
+};

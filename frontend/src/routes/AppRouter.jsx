@@ -11,6 +11,7 @@ import Users from "../pages/Users";
 import Permissions from "../pages/Permissions";
 import Roles from "../pages/Roles";
 import EditRole from "../pages/EditRole";
+import CreateRole from "../pages/createRole";
 
 export default function AppRouter() {
   return (
@@ -28,6 +29,7 @@ export default function AppRouter() {
             <Route path="/permissions" element={<Permissions/>} />
             <Route path="/roles" element={<Roles/>}/>
             <Route path="/roles/:id" element={<EditRole />} />
+            <Route path="/roles/create" element={<CreateRole />} />
           </Route>
         </Route>
       </Routes>

@@ -16,7 +16,7 @@ export default function Roles() {
   return (
     <div>
       <h2>Roles</h2>
-
+      <Link to="/roles/create">+ Add Role</Link>{" "}
       <table border="1">
         <thead>
           <tr>

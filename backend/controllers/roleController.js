@@ -3,7 +3,7 @@ import Role from "../models/Role.js";
 
 export const getRoles = async (req, res) => {
   try {
-    const roles = await Role.find({}).populate('permissions');
+    const roles = await Role.find({}).populate("permissions");
     return res.status(200).json({ message: "Roles fetched", data: roles });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
@@ -24,7 +24,11 @@ export const createRole = async (req, res) => {
       name,
       permissions,
     });
-    return res.status(201).json({ message: "role created", data: role });
+    const populatedRole = await Role.findById(role._id).populate("permissions");
+
+    return res
+      .status(201)
+      .json({ message: "role created", data: populatedRole });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }

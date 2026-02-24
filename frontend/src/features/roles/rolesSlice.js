@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getRoles, updateRole } from "../../services/roleService";
+import { createRole, getRoles, updateRole } from "../../services/roleService";
 export const fetchRoles = createAsyncThunk(
   "roles/fetchRoles",
   async (_, { rejectWithValue }) => {
@@ -9,6 +9,18 @@ export const fetchRoles = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Roles Fetch failed",
+      );
+    }
+  },
+);
+export const createRoleThunk = createAsyncThunk(
+  "roles/createRole",
+  async ({ name, permissions }, { rejectWithValue }) => {
+    try {
+      return await createRole({ name, permissions });
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Create role failed",
       );
     }
   },
@@ -50,6 +62,9 @@ const rolesSlice = createSlice({
         if (index !== -1) {
           state.roleList[index] = updated;
         }
+      })
+      .addCase(createRoleThunk.fulfilled, (state, action) => {
+        state.roleList.push(action.payload.data);
       });
   },
 });
