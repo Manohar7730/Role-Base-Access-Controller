@@ -11,7 +11,10 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true,
+}));
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
@@ -23,6 +26,10 @@ app.use("/api", roleRouter, permissionRouter, userRouter, dashboardRouter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 app.use(errorHandler);
