@@ -1,8 +1,9 @@
 import User from "../models/User.js";
 import Role from "../models/Role.js";
 import Permission from "../models/Permission.js";
+import AppError from "../utils/AppError.js";
 
-export const getDashboardStats = async (req, res) => {
+export const getDashboardStats = async (req, res, next) => {
   try {
     const users = await User.countDocuments({
       "role.name": { $ne: "SUPER_ADMIN" },
@@ -41,7 +42,7 @@ export const getDashboardStats = async (req, res) => {
       recentUsers,
       roleSummary,
     });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
+  } catch (error) {
+    next(error);
   }
 };

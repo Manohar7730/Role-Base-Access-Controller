@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,22 +12,28 @@ export default function Login() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const result = await dispatch(loginUser({ email, password }));
-
-    if (loginUser.fulfilled.match(result)) {
-      navigate("/dashboard", { replace: true });
+    if (!email || !password) {
+      toast.error("Email and password are required");
+      return;
     }
+
+    dispatch(loginUser({ email, password }));
 
     setShowPassword(false);
     setEmail("");
     setPassword("");
   };
 
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -51,12 +58,9 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-
       <div style={styles.card}>
         <h2 style={styles.title}>Login</h2>
-
         <form onSubmit={handleSubmit}>
-
           <label style={styles.label}>Email</label>
           <input
             className="border border-gray-300 rounded-md px-3 py-2 w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -73,10 +77,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <Button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-          >
+          <Button type="button" onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? "Hide Password" : "Show Password"}
           </Button>
 
@@ -90,16 +91,11 @@ export default function Login() {
               Sign Up
             </Link>
           </p>
-
-          <div style={{ marginTop: "10px" }}>
-            <Button onClick={() => navigate("/")}>
-              ⬅ Back to Home
-            </Button>
-          </div>
-
         </form>
+        <div style={{ marginTop: "10px" }}>
+          <Button onClick={() => navigate("/")}>⬅ Back to Home</Button>
+        </div>
       </div>
-
     </div>
   );
 }

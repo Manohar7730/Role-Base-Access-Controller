@@ -5,8 +5,9 @@ import authRouter from "./routes/authRoutes.js";
 import roleRouter from "./routes/roleRoutes.js";
 import permissionRouter from "./routes/permissionRoutes.js";
 import userRouter from "./routes/userRoutes.js";
-import dashboardRouter from "./routes/dashboardRoutes.js"
+import dashboardRouter from "./routes/dashboardRoutes.js";
 import cors from "cors";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -18,11 +19,13 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 app.use("/api/auth", authRouter);
-app.use("/api", roleRouter, permissionRouter, userRouter,dashboardRouter);
+app.use("/api", roleRouter, permissionRouter, userRouter, dashboardRouter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`server running at port ${port}`);

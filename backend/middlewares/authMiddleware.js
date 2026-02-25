@@ -1,21 +1,37 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import AppError from "../utils/AppError.js";
+
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+
     if (!authHeader) {
-      return res.status(401).json({ message: "No token" });
+      return next(new AppError("No token provided", 401));
     }
+
     const token = authHeader.split(" ")[1];
-    const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decodedUser.id);
-    if (!user || user.status !== "ACTIVE") {
-      return res.status(401).json({ message: "Account inactive" });
+
+    if (!token) {
+      return next(new AppError("Malformed authorization header", 401));
     }
+
+    const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decodedUser.id);
+
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    if (user.status !== "ACTIVE") {
+      return next(new AppError("Account inactive", 401));
+    }
+
     req.userId = user._id;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    next(new AppError("Invalid or expired token", 401));
   }
 };
 

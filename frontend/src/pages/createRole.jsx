@@ -4,6 +4,7 @@ import { fetchPermissions } from "../features/permissions/permissionsSlice";
 import { createRoleThunk } from "../features/roles/rolesSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import { toast } from "react-toastify";
 
 export default function CreateRole() {
   const dispatch = useDispatch();
@@ -26,19 +27,27 @@ export default function CreateRole() {
     );
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const result = await dispatch(
+    if (!name.trim()) {
+      toast.error("Role name is required");
+      return;
+    }
+
+    if (selected.length === 0) {
+      toast.error("Select at least one permission");
+      return;
+    }
+
+    dispatch(
       createRoleThunk({
         name,
         permissions: selected,
       })
     );
 
-    if (createRoleThunk.fulfilled.match(result)) {
-      navigate("/roles");
-    }
+    navigate("/roles");
   };
 
   /* Internal CSS */
@@ -66,11 +75,9 @@ export default function CreateRole() {
 
   return (
     <div style={styles.card}>
-
       <h2 style={styles.title}>Create Role</h2>
 
       <form onSubmit={handleSubmit}>
-
         <input
           className="border border-gray-300 rounded-md px-3 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="Role name"
@@ -96,7 +103,6 @@ export default function CreateRole() {
         <div style={{ marginTop: "12px" }}>
           <Button type="submit">Create</Button>
         </div>
-
       </form>
     </div>
   );

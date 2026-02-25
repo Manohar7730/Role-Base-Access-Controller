@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createRole, getRoles, updateRole } from "../../services/roleService";
+import { toast } from "react-toastify";
+import {
+  createRole,
+  getRoles,
+  updateRole,
+} from "../../services/roleService";
 export const fetchRoles = createAsyncThunk(
   "roles/fetchRoles",
   async (_, { rejectWithValue }) => {
@@ -7,34 +12,46 @@ export const fetchRoles = createAsyncThunk(
       const data = await getRoles();
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Roles Fetch failed",
+      toast.error(
+        error.response?.data?.message || "Roles fetch failed"
       );
+      return rejectWithValue();
     }
-  },
+  }
 );
 export const createRoleThunk = createAsyncThunk(
   "roles/createRole",
   async ({ name, permissions }, { rejectWithValue }) => {
     try {
-      return await createRole({ name, permissions });
+      const data = await createRole({ name, permissions });
+
+      toast.success(data.message);
+
+      return data;
     } catch (err) {
-      return rejectWithValue(
-        err.response?.data?.message || "Create role failed",
+      toast.error(
+        err.response?.data?.message || "Create role failed"
       );
+      return rejectWithValue();
     }
-  },
+  }
 );
 export const updateRolePermissions = createAsyncThunk(
   "roles/updateRole",
   async ({ id, permissions }, { rejectWithValue }) => {
     try {
       const data = await updateRole(id, permissions);
+
+      toast.success(data.message);
+
       return data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Update failed");
+      toast.error(
+        error.response?.data?.message || "Update failed"
+      );
+      return rejectWithValue();
     }
-  },
+  }
 );
 const rolesSlice = createSlice({
   name: "roles",
@@ -42,6 +59,7 @@ const rolesSlice = createSlice({
     roleList: [],
     roleLoading: false,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchRoles.pending, (state) => {
@@ -51,20 +69,29 @@ const rolesSlice = createSlice({
         state.roleLoading = false;
         state.roleList = action.payload.data;
       })
+      .addCase(fetchRoles.rejected, (state) => {
+        state.roleLoading = false;
+      })
+      .addCase(createRoleThunk.fulfilled, (state, action) => {
+        state.roleList.push(action.payload.data);
+      })
       .addCase(updateRolePermissions.pending, (state) => {
         state.roleLoading = true;
       })
       .addCase(updateRolePermissions.fulfilled, (state, action) => {
-        const updated = action.payload.data;
+        state.roleLoading = false;
 
-        const index = state.roleList.findIndex((r) => r._id === updated._id);
+        const updated = action.payload.data;
+        const index = state.roleList.findIndex(
+          (r) => r._id === updated._id
+        );
 
         if (index !== -1) {
           state.roleList[index] = updated;
         }
       })
-      .addCase(createRoleThunk.fulfilled, (state, action) => {
-        state.roleList.push(action.payload.data);
+      .addCase(updateRolePermissions.rejected, (state) => {
+        state.roleLoading = false;
       });
   },
 });

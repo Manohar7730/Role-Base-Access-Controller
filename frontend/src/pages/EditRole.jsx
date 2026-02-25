@@ -15,22 +15,19 @@ export default function EditRole() {
 
   const role = roleList.find((r) => r._id === id);
 
-  const [selected, setSelected] = useState(() =>
-    role ? role.permissions.map((p) => p._id) : []
-  );
-
-  if (role && selected.length === 0) {
-    setSelected(role.permissions.map((p) => p._id));
-  }
   useEffect(() => {
     dispatch(fetchPermissions());
   }, [dispatch]);
+
+  const [selected, setSelected] = useState(
+    () => role?.permissions.map((p) => p._id) || [],
+  );
 
   const handleToggle = (permId) => {
     setSelected((prev) =>
       prev.includes(permId)
         ? prev.filter((id) => id !== permId)
-        : [...prev, permId]
+        : [...prev, permId],
     );
   };
 
@@ -39,7 +36,7 @@ export default function EditRole() {
       updateRolePermissions({
         id,
         permissions: selected,
-      })
+      }),
     );
 
     navigate("/roles");
@@ -47,7 +44,6 @@ export default function EditRole() {
 
   if (!role) return <p>Loading...</p>;
 
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -72,7 +68,6 @@ export default function EditRole() {
 
   return (
     <div style={styles.card}>
-
       <h2 style={styles.title}>Edit Role: {role.name}</h2>
 
       {permissions.map((p) => (
@@ -89,7 +84,6 @@ export default function EditRole() {
       <div style={{ marginTop: "12px" }}>
         <Button onClick={handleSave}>Save</Button>
       </div>
-
     </div>
   );
 }

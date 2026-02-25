@@ -1,18 +1,25 @@
-import { useEffect, useState } from "react";
-import { getDashboardStats } from "../services/dashboardService";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardStats } from "../features/dashboard/dashboardSlice";
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
-    getDashboardStats().then(setData);
-  }, []);
+    dispatch(fetchDashboardStats());
+  }, [dispatch]);
 
-  if (!data) {
+  if (loading) {
     return <p className="text-gray-500">Loading...</p>;
   }
 
-  /* Internal CSS */
+  if (!data) {
+    return <p className="text-red-500">Failed to load data</p>;
+  }
+
   const styles = {
     title: {
       fontSize: "22px",
@@ -24,13 +31,9 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-
-      {/* Page Title */}
       <h2 style={styles.title}>RBAC Overview</h2>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-gray-500">Total Users</h3>
           <p className="text-3xl font-bold">{data.users}</p>
@@ -50,12 +53,9 @@ export default function Dashboard() {
           <h3 className="text-gray-500">Total Permissions</h3>
           <p className="text-3xl font-bold">{data.permissions}</p>
         </div>
-
       </div>
 
-      {/* Recent Users */}
       <div className="bg-white p-6 rounded-lg shadow">
-
         <h3 className="text-lg font-semibold mb-4">
           Recent Users
         </h3>
@@ -67,16 +67,13 @@ export default function Dashboard() {
               className="py-2 flex justify-between items-center"
             >
               <span>{u.name}</span>
-
               <span className="text-sm text-gray-600">
                 {u.role?.name} • {u.status}
               </span>
             </li>
           ))}
         </ul>
-
       </div>
-
     </div>
   );
 }

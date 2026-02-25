@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUsers, updateUserStatus,updateUserRole } from "../../services/userService";
+import { toast } from "react-toastify";
+import {
+  getUsers,
+  updateUserStatus,
+  updateUserRole,
+  changePassword,
+} from "../../services/userService";
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
   async (_, { rejectWithValue }) => {
@@ -7,58 +13,86 @@ export const fetchUsers = createAsyncThunk(
       const data = await getUsers();
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Users Fetch failed",
+      toast.error(
+        error.response?.data?.message || "Users fetch failed"
       );
+      return rejectWithValue();
     }
-  },
+  }
 );
 export const makeUpdateUserStatus = createAsyncThunk(
   "users/updateUserStatus",
   async ({ id, status }, { rejectWithValue }) => {
     try {
       const data = await updateUserStatus(id, status);
+
+      toast.success(data.message);
+
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Users Fetch failed",
+      toast.error(
+        error.response?.data?.message ||
+          "User status update failed"
       );
+      return rejectWithValue();
     }
-  },
+  }
 );
 export const makeUpdateUserRole = createAsyncThunk(
   "users/updateUserRole",
   async ({ id, role }, { rejectWithValue }) => {
     try {
       const data = await updateUserRole(id, role);
+
+      toast.success(data.message);
+
       return data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Role update failed",
+      toast.error(
+        error.response?.data?.message || "Role update failed"
       );
+      return rejectWithValue();
     }
-  },
+  }
+);
+export const changePasswordThunk = createAsyncThunk(
+  "users/changePassword",
+  async ({ currentPassword, newPassword }, { rejectWithValue }) => {
+    try {
+      const data = await changePassword({
+        currentPassword,
+        newPassword,
+      });
+
+      toast.success(data.message);
+
+      return data;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Password change failed"
+      );
+      return rejectWithValue();
+    }
+  }
 );
 const usersSlice = createSlice({
   name: "users",
   initialState: {
     list: [],
     loading: false,
-    error: null,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload.data;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
+      .addCase(fetchUsers.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
       })
       .addCase(makeUpdateUserStatus.pending, (state) => {
         state.loading = true;
@@ -68,12 +102,11 @@ const usersSlice = createSlice({
         const updatedUser = action.payload.data;
 
         state.list = state.list.map((u) =>
-          u._id === updatedUser._id ? updatedUser : u,
+          u._id === updatedUser._id ? updatedUser : u
         );
       })
-      .addCase(makeUpdateUserStatus.rejected, (state, action) => {
+      .addCase(makeUpdateUserStatus.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
       })
       .addCase(makeUpdateUserRole.pending, (state) => {
         state.loading = true;
@@ -82,13 +115,12 @@ const usersSlice = createSlice({
         state.loading = false;
         const updatedUser = action.payload.data;
 
-        state.list = state.list.map((user) =>
-          user._id === updatedUser._id ? updatedUser : user,
+        state.list = state.list.map((u) =>
+          u._id === updatedUser._id ? updatedUser : u
         );
       })
-      .addCase(makeUpdateUserRole.rejected, (state, action) => {
+      .addCase(makeUpdateUserRole.rejected, (state) => {
         state.loading = false;
-        state.error = action.payload;
       });
   },
 });

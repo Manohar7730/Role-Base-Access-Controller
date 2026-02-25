@@ -3,6 +3,8 @@ import { registerUser } from "../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import passwordValidate from "../../../passwordValidate";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -16,11 +18,16 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const result = await dispatch(registerUser({ name, email, password }));
-
-    if (registerUser.fulfilled.match(result)) {
-      navigate("/login", { replace: true });
+    if (!passwordValidate(password)) {
+      toast.error(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
+      );
+      return;
     }
+
+    await dispatch(registerUser({ name, email, password })).unwrap();
+
+    navigate("/login");
 
     setShowPassword(false);
     setName("");
@@ -28,7 +35,6 @@ export default function Register() {
     setPassword("");
   };
 
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -92,11 +98,10 @@ export default function Register() {
               Sign In
             </Link>
           </p>
-
-          <div style={{ marginTop: "10px" }}>
-            <Button onClick={() => navigate("/")}>⬅ Back to Home</Button>
-          </div>
         </form>
+        <div style={{ marginTop: "10px" }}>
+          <Button onClick={() => navigate("/")}>⬅ Back to Home</Button>
+        </div>
       </div>
     </div>
   );

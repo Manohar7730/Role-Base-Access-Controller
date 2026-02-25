@@ -1,38 +1,51 @@
 import { useState } from "react";
-import { changePassword } from "../services/userService";
+import { useDispatch } from "react-redux";
+import { changePasswordThunk } from "../features/users/usersSlice";
 import Button from "../components/ui/Button";
+import passwordValidate from "../../../passwordValidate";
+import { toast } from "react-toastify";
 
 export default function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [msg, setMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (newPassword !== confirm) {
-      return setMsg("Passwords do not match");
+    if (!currentPassword || !newPassword || !confirm) {
+      toast.error("All fields are required");
+      return;
     }
 
-    try {
-      const res = await changePassword({
+    if (newPassword !== confirm) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (!passwordValidate(newPassword)) {
+      toast.error(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+      );
+      return;
+    }
+
+    dispatch(
+      changePasswordThunk({
         currentPassword,
         newPassword,
-      });
+      })
+    );
 
-      setShowPassword(false);
-      setMsg(res.message);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirm("");
-    } catch (err) {
-      setMsg(err.response?.data?.message || "Error");
-    }
+    setShowPassword(false);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirm("");
   };
 
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -56,11 +69,9 @@ export default function ChangePassword() {
 
   return (
     <div style={styles.card}>
-
       <h2 style={styles.title}>Change Password</h2>
 
       <form onSubmit={handleSubmit}>
-
         <label style={styles.label}>Current Password</label>
         <input
           className="border border-gray-300 rounded-md px-3 py-2 w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -95,23 +106,7 @@ export default function ChangePassword() {
         <div style={{ marginTop: "12px" }}>
           <Button type="submit">Change</Button>
         </div>
-
       </form>
-
-      {msg && (
-        <p
-          style={{
-            marginTop: "12px",
-            fontWeight: "500",
-            color: msg.toLowerCase().includes("error")
-              ? "#dc2626"
-              : "#16a34a",
-          }}
-        >
-          {msg}
-        </p>
-      )}
-
     </div>
   );
 }

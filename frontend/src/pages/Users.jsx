@@ -9,10 +9,10 @@ import { fetchRoles } from "../features/roles/rolesSlice";
 import api from "../services/api";
 import "../styles/table.css";
 import Button from "../components/ui/Button";
+import passwordValidate from "../../../passwordValidate";
+import { toast } from "react-toastify";
 
 export default function Users() {
-
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -50,19 +50,27 @@ export default function Users() {
   };
 
   const handleReset = async (userId) => {
-    if (!tempPassword) return alert("Enter new password");
+    if (!tempPassword) {
+      toast.error("Enter new password");
+      return;
+    }
+
+    if (!passwordValidate(tempPassword)) {
+      toast.error(
+        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
 
     try {
       await api.patch(`/api/users/${userId}/reset-password`, {
         newPassword: tempPassword,
       });
 
-      alert("Password reset successfully");
-
       setShowReset(null);
       setTempPassword("");
     } catch (err) {
-      alert(err.response?.data?.message || "Error resetting password");
+      toast.error(err.response?.data?.message || "Error resetting password");
     }
   };
 
@@ -70,13 +78,10 @@ export default function Users() {
 
   return (
     <div>
-
-      {/* Page Title */}
       <h2 style={styles.title}>Users</h2>
 
       <div className="table-container">
         <table>
-
           <thead>
             <tr>
               <th>Name</th>
@@ -91,11 +96,9 @@ export default function Users() {
           <tbody>
             {list.map((u) => (
               <tr key={u._id}>
-
                 <td>{u.name}</td>
                 <td>{u.email}</td>
 
-                {/* Inline Conditional Styling */}
                 <td
                   style={{
                     color: u.status === "ACTIVE" ? "#16a34a" : "#dc2626",
@@ -109,9 +112,7 @@ export default function Users() {
                   <select
                     value={u.role?.name || ""}
                     disabled={roleLoading}
-                    onChange={(e) =>
-                      handleRoleChange(u._id, e.target.value)
-                    }
+                    onChange={(e) => handleRoleChange(u._id, e.target.value)}
                   >
                     {roleList.map((r) => (
                       <option key={r._id} value={r.name}>
@@ -134,9 +135,7 @@ export default function Users() {
                         className="border border-gray-300 rounded-md px-3 py-2 w-full mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder="Temp Password"
                         value={tempPassword}
-                        onChange={(e) =>
-                          setTempPassword(e.target.value)
-                        }
+                        onChange={(e) => setTempPassword(e.target.value)}
                       />
 
                       <div style={{ display: "flex", gap: "6px" }}>
@@ -155,14 +154,11 @@ export default function Users() {
                     </Button>
                   )}
                 </td>
-
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
-
     </div>
   );
 }

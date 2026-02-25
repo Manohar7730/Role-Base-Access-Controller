@@ -1,30 +1,43 @@
 import { useState } from "react";
-import { createPermission } from "../services/permissionService";
+import { useDispatch } from "react-redux";
+import { createPermissionThunk } from "../features/permissions/permissionsSlice";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import { toast } from "react-toastify";
 
 export default function CreatePermission() {
   const [key, setKey] = useState("");
   const [description, setDescription] = useState("");
-  const [msg, setMsg] = useState("");
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      const res = await createPermission({ key, description });
-      setMsg(res.message);
-      setKey("");
-      setDescription("");
-
-      setTimeout(() => navigate("/permissions"), 800);
-    } catch (err) {
-      setMsg(err.response?.data?.message || "Error");
+    if (!key.trim()) {
+      toast.error("Permission key is required");
+      return;
     }
+
+    if (!description.trim()) {
+      toast.error("Description is required");
+      return;
+    }
+
+    dispatch(
+      createPermissionThunk({
+        key,
+        description,
+      })
+    );
+
+    setKey("");
+    setDescription("");
+
+    navigate("/permissions");
   };
 
-  /* Internal CSS */
   const styles = {
     title: {
       fontSize: "22px",
@@ -43,11 +56,9 @@ export default function CreatePermission() {
 
   return (
     <div style={styles.card}>
-
       <h2 style={styles.title}>Create Permission</h2>
 
       <form onSubmit={handleSubmit}>
-
         <input
           className="border border-gray-300 rounded-md px-3 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
           placeholder="permission.key"
@@ -63,23 +74,7 @@ export default function CreatePermission() {
         />
 
         <Button type="submit">Create</Button>
-
       </form>
-
-      {msg && (
-        <p
-          style={{
-            marginTop: "12px",
-            fontWeight: "500",
-            color: msg.toLowerCase().includes("error")
-              ? "#dc2626"
-              : "#16a34a",
-          }}
-        >
-          {msg}
-        </p>
-      )}
-
     </div>
   );
 }

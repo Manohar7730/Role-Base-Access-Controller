@@ -1,18 +1,27 @@
 import User from "../models/User.js";
+import AppError from "../utils/AppError.js";
+
 const authorize = (permission) => async (req, res, next) => {
   try {
     const userId = req.userId;
+
     if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
+      return next(new AppError("Not authenticated", 401));
     }
+
     const user = await User.findById(userId).populate({
       path: "role",
       populate: {
         path: "permissions",
       },
     });
-    if (!user || !user.role) {
-      return res.status(403).json({ message: "No role assigned" });
+
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    if (!user.role) {
+      return next(new AppError("No role assigned", 403));
     }
     if (user.role.name === "SUPER_ADMIN") {
       return next();
@@ -20,11 +29,12 @@ const authorize = (permission) => async (req, res, next) => {
     const permissionKeys = user.role.permissions.map((p) => p.key);
 
     if (!permissionKeys.includes(permission)) {
-      return res.status(403).json({ message: "Forbidden" });
+      return next(new AppError("Forbidden", 403));
     }
+
     next();
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
