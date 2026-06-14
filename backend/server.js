@@ -11,18 +11,26 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 const port = process.env.PORT || 5000;
 
 connectDB();
 
-app.use("/api/auth", authRouter);
-app.use("/api", roleRouter, permissionRouter, userRouter, dashboardRouter);
+app.use(
+  "/api",
+  authRouter,
+  roleRouter,
+  permissionRouter,
+  userRouter,
+  dashboardRouter,
+);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
