@@ -119,7 +119,7 @@ LOCAL DEVELOPMENT SETUP
 
 1) Clone repository
 
-- git clone https://github.com:Manohar7730/Role-Base-Access-Controller.git
+- git clone https://github.com/Manohar7730/Role-Base-Access-Controller.git
 
 - cd Role-Base-Access-Controller
 
