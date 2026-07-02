@@ -1,288 +1,338 @@
-# 🚀  ROLE BASED ACCESS CONTROL PLATFORM (RBAC)
-# Full Stack Configurable Operations Platform
+# 🔐 Role-Based Access Control Platform (RBAC)
+### Full-Stack Enterprise Access Management System | MERN Stack
 
-Live Frontend:
-https://rolebasedcontrol.netlify.app/
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)]([https://rolebasedcontrol.netlify.app](https://rolebasedcontrol.netlify.app/))
+[![Backend](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge&logo=render)]([https://role-base-access-controller.onrender.com](https://role-base-access-controller.onrender.com))
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)]([https://github.com/Manohar7730/Role-Base-Access-Controller](https://github.com/Manohar7730/Role-Base-Access-Controller))
 
-Live Backend:
-https://role-base-access-controller.onrender.com/
+---
 
-------------------------------------------------------------
-ABOUT THE PROJECT
-------------------------------------------------------------
+## 🌐 Live Links
 
-Role Based Access Control Platform is a full-stack MERN application
-designed to demonstrate production-level authentication, authorization,
-and dynamic role-permission management.
+| Resource | URL |
+|---|---|
+| 🖥️ Frontend (Netlify) |[ https://rolebasedcontrol.netlify.app](https://rolebasedcontrol.netlify.app/) |
+| ⚙️ Backend API (Render) | [https://role-base-access-controller.onrender.com](https://role-base-access-controller.onrender.com) |
+| 📂 GitHub Repository | [https://github.com/Manohar7730/Role-Base-Access-Controller](https://github.com/Manohar7730/Role-Base-Access-Controller) |
 
-This system allows organizations to:
+> ⚠️ **Note:** Backend is hosted on Render free tier. First request may take 30–50 seconds to wake up the server.
+
+---
+
+# 📌 About The Project
+
+RBAC Platform is a full-stack MERN application implementing real-world enterprise Role-Based Access Control.
+
+The system allows organizations to:
 
 - Register and manage users
-- Assign roles to users
-- Attach permissions to roles
-- Dynamically control feature visibility
-- Secure backend APIs with middleware
-- Render frontend UI based on permission keys
+- Create roles and permissions
+- Assign roles dynamically
+- Enforce permission-based API security
+- Render UI conditionally based on permissions
 
-The architecture follows real-world enterprise RBAC design principles.
+Built following real-world enterprise RBAC design principles.
 
-------------------------------------------------------------
-TECH STACK
-------------------------------------------------------------
+---
 
-Frontend:
-- React (Vite)
-- Redux Toolkit
-- React Router
-- Tailwind CSS
-- Styled Components
-- Axios
+# 🏗️ System Architecture
 
-Backend:
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- JWT Authentication
+```text
+┌─────────────┐     JWT Token      ┌─────────────────┐
+│    User     │ ─────────────────► │   Express API   │
+│  (Browser)  │                    │   (Node.js)     │
+└─────────────┘                    └────────┬────────┘
+                                            │
+                                   Auth Middleware
+                                   Permission Check
+                                            │
+                              ┌─────────────▼────────────┐
+                              │        MongoDB            │
+                              │ Users / Roles / Permissions
+                              └──────────────────────────┘
 
-Deployment:
-- Backend → Render
-- Frontend → Netlify
-- Database → MongoDB Atlas
+Permission Model:
 
-------------------------------------------------------------
-SYSTEM ARCHITECTURE
-------------------------------------------------------------
+User ──► Role ──► Permissions[]
+```
 
-User → Role → Permissions
+---
 
-- Each User has one Role
-- Each Role contains multiple Permissions
-- Backend validates permission for every protected API
-- Frontend dynamically renders UI using permission keys
+# 🛠️ Tech Stack
 
-Authorization is enforced server-side.
-Frontend visibility is controlled using Permission Guards.
+## Frontend
 
-------------------------------------------------------------
-FEATURES
-------------------------------------------------------------
+| Technology | Purpose |
+|---|---|
+| React (Vite) | UI framework |
+| Redux Toolkit | State management |
+| React Router | Routing |
+| Tailwind CSS | Styling |
+| Styled Components | Component styling |
+| Axios | API calls |
 
-Authentication:
-- User Registration
+## Backend
+
+| Technology | Purpose |
+|---|---|
+| Node.js | Runtime |
+| Express.js | API framework |
+| MongoDB Atlas | Database |
+| Mongoose | ODM |
+| JWT | Authentication |
+| bcrypt | Password hashing |
+
+## Deployment
+
+| Service | Purpose |
+|---|---|
+| Netlify | Frontend |
+| Render | Backend |
+| MongoDB Atlas | Database |
+
+---
+
+# ✨ Features
+
+## Authentication
+
+- User registration
 - Login with JWT
-- Token-based authentication
-- Protected Routes
+- Session management
+- Protected routes
 - Logout
+- Change password
 
-Admin Features:
-- View Users
-- Activate / Deactivate Users
-- Assign Roles
-- Create Roles
-- Update Role Permissions
-- Create Permissions
-- View Permission Usage
+## Admin Features
 
-Frontend Controls:
-- Permission-based UI rendering
-- Role-based navigation
-- Protected routing
-- Clean SaaS-style dashboard layout
+- View users
+- Activate/deactivate users
+- Assign roles
+- Create roles
+- Update permissions
+- Create permissions
 
-------------------------------------------------------------
-PROJECT STRUCTURE
-------------------------------------------------------------
+## Security
+
+- JWT middleware
+- Permission authorization
+- bcrypt hashing
+- Environment variables
+- CORS
+
+## Frontend Controls
+
+- PermissionGuard
+- ProtectedRoute
+- PublicRoute
+- Dynamic sidebar
+
+---
+
+# 📁 Project Structure
+
+```text
+Role-Base-Access-Controller/
 
 backend/
-  controllers/
-  models/
-  routes/
-  middlewares/
-  config/
-  server.js
-  .env
+├── config/
+├── controllers/
+├── middlewares/
+├── models/
+├── routes/
+├── seed/
+├── utils/
+└── server.js
 
 frontend/
-  src/
-    components/
-    pages/
-    services/
-    features/
-    app/
-    styles/
-  vite.config.js
+└── src/
+    ├── app/
+    ├── components/
+    ├── features/
+    ├── pages/
+    ├── routes/
+    └── services/
 
-------------------------------------------------------------
-LOCAL DEVELOPMENT SETUP
-------------------------------------------------------------
+README.md
+```
 
-1) Clone repository
+---
 
-- git clone https://github.com/Manohar7730/Role-Base-Access-Controller.git
+# 🔌 API Endpoints
 
-- cd Role-Base-Access-Controller
+## Authentication
 
-------------------------------------------------------------
-BACKEND SETUP
-------------------------------------------------------------
+| Method | Endpoint |
+|---|---|
+| POST | /api/auth/register |
+| POST | /api/auth/login |
+| POST | /api/auth/change-password |
 
+## Users
+
+| Method | Endpoint |
+|---|---|
+| GET | /api/users |
+| PATCH | /api/users/:id/status |
+| PATCH | /api/users/:id/role |
+
+## Roles
+
+| Method | Endpoint |
+|---|---|
+| GET | /api/roles |
+| POST | /api/roles |
+| PATCH | /api/roles/:id |
+
+## Permissions
+
+| Method | Endpoint |
+|---|---|
+| GET | /api/permissions |
+| POST | /api/permissions |
+
+## Dashboard
+
+| Method | Endpoint |
+|---|---|
+| GET | /api/dashboard |
+
+---
+
+# ⚙️ Local Development Setup
+
+## Prerequisites
+
+- Node.js v18+
+- MongoDB
+- Git
+
+## Clone Repository
+
+```bash
+git clone https://github.com/Manohar7730/Role-Base-Access-Controller.git
+cd Role-Base-Access-Controller
+```
+
+## Backend Setup
+
+```bash
 cd backend
 npm install
+```
 
-Create .env file inside backend:
+Create `.env`
 
+```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/RBAC
-JWT_SECRET=your_secret_key
+JWT_SECRET=your_secret_key_here
+```
 
-Run backend:
+Run backend
 
+```bash
 npm run dev
+```
 
-Backend runs at:
-http://localhost:5000
+Seed database
 
-------------------------------------------------------------
-FRONTEND SETUP
-------------------------------------------------------------
+```bash
+node seed/seedDatabase.js
+```
 
-- cd frontend
-- npm install
-- npm run dev
+## Frontend Setup
 
-- Frontend runs at:
-http://localhost:5173
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
 
-------------------------------------------------------------
-API SECURITY
-------------------------------------------------------------
+---
 
-All protected endpoints require:
+# 🚀 Deployment Guide
 
-Authorization: Bearer <JWT_TOKEN>
+## MongoDB Atlas
 
-- Example Endpoints:
+```text
+1. Create cluster
+2. Create DB user
+3. Allow network access
+4. Copy connection string
+```
 
-- GET    /api/users
-- PATCH  /api/users/:id/status
-- PATCH  /api/users/:id/role
-- GET    /api/roles
-- POST   /api/roles
-- PATCH  /api/roles/:id
-- GET    /api/permissions
-- POST   /api/permissions
+## Render Backend
 
-------------------------------------------------------------
-DEPLOYMENT GUIDE
-------------------------------------------------------------
+```text
+1. Create Web Service
+2. Connect GitHub
+3. Root: backend
+4. Build: npm install
+5. Start: npm start
+6. Add environment variables
+```
 
-1) MongoDB Atlas
+## Configure Frontend
 
-- Create cluster
-- Create DB user
-- Allow IP access: 0.0.0.0/0
-- Copy connection string
+```javascript
+baseURL: "https://your-render-url.onrender.com"
+```
 
-Example:
+## Netlify Frontend
 
-mongodb+srv://username:password@cluster.mongodb.net/RBAC
-
-------------------------------------------------------------
-
-2) Deploy Backend (Render)
-
-- Create Web Service
-- Connect GitHub repository
-- Root directory: backend
-- Build Command: npm install
-- Start Command: npm start
-
-Add Environment Variables:
-MONGO_URI
-JWT_SECRET
-PORT=5000
-
-------------------------------------------------------------
-
-3) Configure Frontend API
-
-In frontend/src/services/api.js:
-
-baseURL: "https://role-base-access-controller.onrender.com"
-
-------------------------------------------------------------
-
-4) Build Frontend
-
-cd frontend
+```bash
 npm run build
+```
 
-------------------------------------------------------------
+or
 
-5) Deploy Frontend (Netlify)
-
-Option 1:
-Drag & drop dist folder into Netlify
-
-Option 2 CLI:
+```bash
 npm install -g netlify-cli
 netlify login
 netlify deploy --prod --dir=dist
+```
 
-------------------------------------------------------------
-SECURITY DESIGN PRINCIPLES
-------------------------------------------------------------
+---
 
-- Backend enforces authorization using middleware
-- Permission keys are validated server-side
-- Frontend visibility does not replace backend security
-- Role-based control prevents direct permission assignment to users
-- Clean separation of concerns between UI and API
+# 🔒 Security Principles
 
-------------------------------------------------------------
-WHY THIS PROJECT MATTERS
-------------------------------------------------------------
+- Backend authorization enforcement
+- Permission-level access control
+- JWT secrets in environment variables
+- bcrypt password hashing
+- Token validation on every request
+- CORS restrictions
 
-This project demonstrates:
+---
 
-- Real-world RBAC implementation
-- Secure API architecture
-- Authentication & Authorization flows
-- Redux state management
-- Middleware design
-- Production deployment
-- SaaS dashboard design principles
+# 🧪 Demo Credentials
 
-------------------------------------------------------------
-RESUME ENTRY
-------------------------------------------------------------
+| Role | Email | Password |
+|---|---|---|
+| Admin | superadmin@gmail.com | Admin@123 |
 
-Built a full-stack RBAC admin platform using MERN stack with JWT authentication,
-permission-based authorization middleware, dynamic role-permission management,
-and deployed the system to cloud infrastructure (Render & Netlify).
+---
 
-------------------------------------------------------------
-FUTURE ENHANCEMENTS
-------------------------------------------------------------
+# 🔮 Future Enhancements
 
-- Password policy enforcement
-- Global error handling middleware
-- Toast notification system
-- Token versioning for forced logout
-- Audit logs
-- Multi-tenant support
-- CI/CD pipeline
-- Docker containerization
+- [ ] Audit logs
+- [ ] Multi-tenant support
+- [ ] Token versioning
+- [ ] GitHub Actions
+- [ ] Docker support
+- [ ] Jest tests
 
-------------------------------------------------------------
-LICENSE
-------------------------------------------------------------
+---
 
-@Manohar7730
+# 👨‍💻 Author
 
-------------------------------------------------------------
-AUTHOR
-------------------------------------------------------------
+**Manohar Pediredla**
 
-Manohar Pediredla
+- LinkedIn: https://linkedin.com/in/manoharpediredla
+- GitHub: https://github.com/Manohar7730
+- Portfolio: https://manoharp.netlify.app
+
+---
+
+Built as a learning project demonstrating enterprise RBAC concepts using the MERN stack.
